@@ -40,5 +40,10 @@ Visual Studio Code Project
 1. PSoC Creator is needed for the routing / system setup. A Windows environment is required to run PSoC Creator. PSoC Creator is only needed for the chip configuration (often a one-time setup).
 1. The build process uses Cypress' cyelftool which is officialy built for Windows only. OTX-Maestro tools includes is a rebuilt version for MacOs and Linux. The official C source files can be found [here](https://www.cypress.com/documentation/software-and-drivers/elftool-open-source-foss-packages) or [here](https://github.com/RolfNoot/assets/blob/main/PSoC5_VS_Creator/Infineon-CyElfTool-1.0.1.8.zip_(includes_libelf-0.8.13-patch2)-DevelopmentTools-v01_00-EN.zip?raw=true). Another possibility is to use Wine.
 1. PSoC Creator uses CyComponentLibrary.a from the PSoC Creator application folder. The postbuild action copies CyComponentLibrary.a from the PSoC Creator application folder to the project folder.
+1. Feedback and Community Involvement: While significant effort has been made to ensure this setup works smoothly, not all possible configurations and platforms could be tested. Therefore, community feedback and contributions are highly encouraged to further improve the tool. Any issues, suggestions, or improvements can be shared within the Infineon developer community.
+1. Disclaimer: Although this setup uses well-tested tools and configurations, the use of it is at your own risk.
+<br/>
+Enjoy!
 <br/><br/>
+
 ![PSoC5_VS_Creator](../../../assets/blob/main/PSoC5_VS_Creator/VS_Code_Creator.png?raw=true)<br/>
