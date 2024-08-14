@@ -1,0 +1,6 @@
+{
+  "json.validate.enable": false,  //temporary disable as tasks.json yields error on "fileLocation": ["relative", "${workspaceFolder}/build" ]
+  "cortex-gdb.armToolchainPath": "${env:ONETHINX_PACK_LOC}/gcc-arm/bin",
+  "memory-view.trackDebuggers": ["cortex-gdb"],
+  "debug.showInStatusBar": "never"
+}

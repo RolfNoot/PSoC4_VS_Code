@@ -1,0 +1,183 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            // In case OpenOCD fails programming, fully erase PSoC4 with PSoC Programmer
+            "name": "Debug",
+            "type": "cortex-gdb",
+            "request": "launch",
+            "cwd": "${workspaceRoot}",
+            "executable": "${workspaceRoot}/build/${workspaceFolderBasename}.elf",    
+            "servertype": "openocd",
+            "serverpath": "${env:ONETHINX_PACK_LOC}/openocd/bin/openocd",
+            "searchDir": [ "${env:ONETHINX_PACK_LOC}/openocd/scripts" ],
+            "openOCDLaunchCommands": [
+                //"cmsis_dap_serial 141610F301237400",                                      // Select debugger if you have multiple connected
+            ],
+            "configFiles": [
+                ".vscode/brd.cfg"
+            ],
+            "preLaunchCommands": [
+                "directory PSoC_Creator.cydsn/Generated_Source/PSoC4",                      // Add location of source files built with PSoC Creator
+                "set mem inaccessible-by-default off",
+            ],
+            "postLaunchCommands": [
+                "monitor reg",
+                "mon psoc4 reset_halt",
+            ],
+            "postRestartCommands": [
+                "tbreak main",
+                "tbreak main",
+                "mon psoc4 reset_halt",
+            ],
+            "runToEntryPoint": "main",                                                      // if true, program will halt at main. Not used for a restart     
+            "preLaunchTask": "${command:otx-maestro.preLaunch}",                            // otx-maestro.preLaunch will build the project to prevent unmatched source code debugging
+            //"showDevDebugOutput": false,                                                  // Shows output of GDB, helpful when something is not working right
+            "showServerOutput": "switch",                                                   // Show GDB server output in Debug Console
+        },
+        {
+            "name": "Debug (J-Link direct)",
+            "type": "cortex-gdb",
+            "request": "launch",
+            "device": "CY8C4248xxx-BLxxx",
+            "servertype": "jlink",
+            "cwd": "${workspaceRoot}",
+            "executable": "${workspaceRoot}/build/${workspaceFolderBasename}.elf",
+            "debuggerArgs": ["-singlerun -strict -timeout 0 -nogui"],
+            "preLaunchTask": "${command:otx-maestro.preLaunch}",                            // otx-maestro.preLaunch will build the project to prevent unmatched source code debugging
+            "interface": "swd",
+            "preLaunchCommands": [
+                "directory PSoC_Creator.cydsn/Generated_Source/PSoC4",                      // Add location of source files built with PSoC Creator
+                "set mem inaccessible-by-default off",
+                "monitor speed 1000",
+                "monitor clrbp",
+                "monitor reset 0",
+                "monitor halt",
+                "monitor regs",
+                "monitor speed auto",
+                "monitor flash breakpoints 1",
+                "monitor semihosting enable"
+            ],
+            "postLaunchCommands": [
+                "monitor clrbp",
+                "monitor reset 2",
+                "monitor halt",
+                "monitor reset 0",
+                "tbreak main",
+                "monitor regs",
+                //"continue",                                                               // uncomment for breaking at main, comment for breaking at first instruction
+                //"monitor halt"                                                            // uncomment for breaking at main, comment for breaking at first instruction
+            ],
+            "postRestartCommands": [
+                "monitor clrbp",
+                "monitor reset 2",
+                "monitor halt",
+                "monitor reset 0",
+                "tbreak main",
+                "monitor regs",
+                //"continue",
+                //"monitor halt",
+            ],
+            "runToEntryPoint": "main",                                                      // if true, program will halt at main. Not used for a restart
+            "showServerOutput": "switch",                                                   // Show GDB server output in Debug Console
+        },
+        {
+            "name": "Attach",
+            "type": "cortex-gdb",
+            "request": "attach",
+            "cwd": "${workspaceRoot}",
+            "executable": "${workspaceRoot}/build/${workspaceFolderBasename}.elf",
+            "servertype": "openocd",
+            "serverpath": "${env:ONETHINX_PACK_LOC}/openocd/bin/openocd",
+            "searchDir": [ "${env:ONETHINX_PACK_LOC}/openocd/scripts" ],
+            "configFiles": [
+                ".vscode/brd.cfg"
+            ],
+            "overrideAttachCommands": [
+                "set mem inaccessible-by-default off",
+                "-enable-pretty-printing",
+                //"set output-radix 16",                                                    // Uncomment this if you want decimal output instead of hexadecimal
+                "monitor halt"
+            ],
+            "overrideRestartCommands": [
+                "monitor reset init",
+               // "monitor reset run",
+                "monitor sleep 200",
+                //"monitor psoc6 reset_halt sysresetreq"
+            ],
+            "postRestartSessionCommands": [
+                "monitor gdb_sync",
+                "stepi",
+                "tbreak main"
+            ],
+            //"showDevDebugOutput": "raw",                                                  // Shows output of GDB, helpful when something is not working right
+            "showServerOutput": "switch",                                                   // Show GDB server output in Debug Console
+        },
+        {
+            "name": "Attach (J-Link direct)",
+            "type": "cortex-gdb",
+            "request": "attach",
+            "device": "CY8C4248xxx-BLxxx",
+            "servertype": "jlink",
+            "cwd": "${workspaceRoot}",
+            "executable": "${workspaceRoot}/build/${workspaceFolderBasename}.elf",
+            //"debuggerArgs": ["-singlerun -strict -timeout 0 -nogui"],
+            "interface": "swd",
+             "postRestartCommands": [
+                "monitor clrbp",
+                "monitor reset 2",
+                "monitor halt",
+                "monitor reset 0",
+                "tbreak main",
+                "monitor regs",
+                "continue",
+                "monitor halt",
+            ],
+            "showServerOutput": "switch",                                                   // Show GDB server output in Debug Console
+        },
+        {
+            "name": "Erase",
+            "type": "cortex-gdb",
+            "request": "launch",
+            "cwd": "${workspaceRoot}",
+            "executable": "${workspaceRoot}/build/${workspaceFolderBasename}.elf",
+            "servertype": "openocd",
+            "serverpath": "${env:ONETHINX_PACK_LOC}/openocd/bin/openocd",
+            "searchDir": [ "${env:ONETHINX_PACK_LOC}/openocd/scripts" ],
+            "configFiles": [
+                ".vscode/brd.cfg"
+            ],
+            "overrideLaunchCommands": [
+                "mon psoc5lp mass_erase 0",
+                "mon psoc5lp mass_erase 1",
+                "mon psoc5lp mass_erase 2",
+                "-gdb-exit"
+            ],
+            "showServerOutput": "switch",                                                   // Show GDB server output in Debug Console
+        },
+        {
+            "name": "Program",
+            "type": "cortex-gdb",
+            "request": "launch",
+            "cwd": "${workspaceRoot}",
+            "executable": "${workspaceRoot}/build/${workspaceFolderBasename}.elf",
+            "servertype": "openocd",
+            "serverpath": "${env:ONETHINX_PACK_LOC}/openocd/bin/openocd",
+            "searchDir": [ "${env:ONETHINX_PACK_LOC}/openocd/scripts" ],
+            "configFiles": [
+               ".vscode/brd.cfg"
+            ],
+            "openOCDLaunchCommands": [
+                //"cmsis_dap_serial 141610F301237400",                                      // Select debugger if you have multiple connected
+            ],
+            "postLaunchCommands": [
+                //"monitor program ./build/${workspaceFolderBasename}.hex",
+                //"monitor reset_config srst_only",
+              //  "monitor reset run",
+                //"monitor psoc6.dap dpreg 0x04 0x00",
+                "-gdb-exit"
+            ],
+            "showServerOutput": "switch",                                                   // Show GDB server output in Debug Console
+        }
+    ]
+}

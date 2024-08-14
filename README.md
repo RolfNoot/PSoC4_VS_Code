@@ -4,7 +4,6 @@ The PSoC4 BLE Example code for Visual Studio Code
 <em>For Windows, Linux, MacOs</em>
 
 This example project is refactored for Visual Studio Code. Project configuration is done by the 'good old' PSoC Creator.<br/>
-'Kitt Scanner' uses only a handfull of magnificent UDB blocks. Just connect 8 LED's to Port2 (common ground).<br/><br/>
 
 
 ```

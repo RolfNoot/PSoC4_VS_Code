@@ -1,0 +1,6 @@
+{
+    "version": "1.0.4",
+    "updatePackage":"https://raw.githubusercontent.com/onethinx/Maestro-lib/main/templates/psoc4/.vscode/update.json",
+    "excludeFiles": [
+    ]
+}

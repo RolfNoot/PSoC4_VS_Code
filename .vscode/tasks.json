@@ -1,0 +1,201 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+    {
+        "label": "OTX Maestro",
+        "command": "${command:otx-maestro.showInfo}",
+        "options": {
+            "statusbar": { 
+                "label": "$(zap)OTX-Maestro$(zap)",
+                "color": "#25C0D8",
+                "alignment": "left",
+                "priority": 0,
+                "detail": "OTX-Maestro v${thisVersion}\n\n[Learn More](https://github.com/onethinx/OTX-Maestro/blob/main/README.md)"
+            },
+        },
+    },
+    {
+        "label": "JLink Power Off",
+        "type": "shell",
+        "command": "${env:ONETHINX_PACK_LOC}/bin/JlinkOnOff/JlinkOnOff off",
+        "options": {
+            "statusbar": { 
+                "label": "$(terminal) JLink Power Off",
+                "hide" : "${notJlink}",
+                "alignment": "right",
+                "priority": 500
+            },
+        },
+    },
+    {
+        "label": "JLink Power On",
+        "type": "shell",
+        "command": "${env:ONETHINX_PACK_LOC}/bin/JlinkOnOff/JlinkOnOff on",
+        "options": {
+            "statusbar": { 
+                "label": "$(terminal) JLink Power On",
+                "hide" : "${notJlink}",
+                "color" : "#10C010",
+                "alignment": "right",
+                "priority": 500
+            },
+        }
+    },
+    {
+        "label": "Creator: postbuild",
+        "hide": true,
+        "type": "shell",
+        "command": "${env:ONETHINX_PACK_LOC}/bin/Creator_PostBuild -v2 -absLinkPathV=CREATOR_DIR",
+        "linux": {
+            "command": "TERM=XTERM ${env:ONETHINX_PACK_LOC}/bin/Creator_PostBuild -v2 -absLinkPathV=CREATOR_DIR"
+        },
+        "options": {
+            "statusbar": { "hide" : true },
+            "cwd": "${workspaceFolder}/PSoC_Creator.cydsn/"
+        }
+    }, 
+    {
+        "label": "Update Project",
+        "command": "${command:otx-maestro.updateProject}",
+        "options": {
+            "statusbar": { 
+                "label": "$(notebook-render-output) Update Project",
+                "hide" : false,
+                "alignment": "right",
+                "priority": 500
+            },
+        }
+    },
+    {
+        "label": "Select Programmer",
+        "command": "${command:otx-maestro.selectProgrammer}",
+        "options": {
+            "statusbar": { 
+                "label": "$(wrench) Select Programmer",
+                "hide" : false,
+                "alignment": "right",
+                "priority": 500
+            },
+        }
+    },
+    {
+        "label": "Clean-Reconfigure",
+        "command": "${command:otx-maestro.clean}",
+        "options": {
+            "statusbar": { 
+                "label": "$(references) Clean-Reconfigure",
+                "detail" : "Clean and Reconfigure Workspace",
+                "alignment": "right",
+                "priority": 500
+            },
+        }
+    },
+    {
+        "label": "Build",
+        "command": "${command:otx-maestro.build}",
+        "options": {
+            "statusbar": { 
+                "label": "$(file-binary) Build",
+                "detail" : "Build your project",
+                "alignment": "right",
+                "priority": 500
+            },
+        }
+    },
+    {
+        "label": "Build-and-Launch",
+        "command": "${command:otx-maestro.launch}",
+        "options": {
+            "statusbar": { 
+                "label": "$(rocket) Build-and-Launch",
+                "color" : "#FF8000",
+                "detail" : "Build and Launch your project",
+                "alignment": "right",
+                "priority": 500
+            },
+        },
+    }, 
+    {
+        "label": "OTX: configure",
+        "type": "shell",
+        "command": "${env:ONETHINX_PACK_LOC}/bin/meson setup --cross-file cross_gcc.build build",
+        "args": [],
+        "options": {
+            "statusbar": { "hide" : true },
+            "cwd": "${workspaceFolder}",
+            "env": { "PATH": "${env:ONETHINX_PACK_LOC}/bin" },
+        }
+    },
+    {
+        "label": "OTX: build",
+        "type": "shell",
+        "command": "ninja -C build",
+        "args": [],
+        "options": {
+            "statusbar": { "hide" : true },
+            "cwd": "${workspaceFolder}",
+            "env": { "PATH": "${env:ONETHINX_PACK_LOC}/bin" },
+        },
+        "problemMatcher": [
+        {
+            "base": "$gcc",
+            "fileLocation": ["relative", "${workspaceFolder}/build" ]
+        },
+        {
+            "owner": "linker0",
+            "severity": "error",
+            "fileLocation" : "absolute",
+            "pattern": {
+            "regexp": "((error): ld returned (-?\\d+) exit status)",
+            "message": 1,
+            "file" : 2
+            }
+        },
+        {
+            "owner": "linker1",
+            "severity": "error",
+            "fileLocation" : "absolute",
+            "pattern": {
+            "regexp": "(\\S*\\..{0,2}):(\\d*):\\s(undefined reference to `\\S*')",
+            "file": 1,
+            "line": 2,
+            "message": 3
+            }
+        },
+        {
+            "owner": "linker2",
+            "severity": "error",
+            "fileLocation" : "absolute",
+            "pattern": {
+            "regexp": "((.*\\..{0,2}):(\\d+): (multiple definition of .+);.+:(.*\\..{0,2}):(\\d+): first defined here)",
+            "message": 4,
+            "file": 5,
+            "line": 3
+            }
+        },
+        {
+            "owner": "linker3",
+            "severity": "error",
+            "fileLocation" : "absolute",
+            "pattern": {
+            "regexp": "((cannot open linker script file (.+.ld): No such file or directory))",
+            "message": 1,
+            "file": 3
+            }
+        },
+        {
+            "owner": "linker4",
+            "severity": "error",
+            "fileLocation" : "absolute",
+            "pattern": {
+            "regexp": "((region `\\S+' overflowed by \\d+ bytes))",
+            "message": 1
+            }
+        }
+        ],
+        "group": {
+            "kind": "build",
+            "isDefault": true
+        }
+    }]
+}
